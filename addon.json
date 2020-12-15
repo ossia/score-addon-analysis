@@ -1,5 +1,5 @@
 {
-    "src": "https://github.com/OSSIA/score-addon-analysis/archive/score-addon-analysis.zip",
+    "src": "https://github.com/ossia/score-addon-analysis/releases/download/v1.0.0/score-addon-analysis.zip",
     "name": "Analysis",
     "raw_name": "score-addon-analysis",
     "version": "1.0",
