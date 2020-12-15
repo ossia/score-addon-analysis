@@ -1,0 +1,10 @@
+{
+    "src": "https://github.com/OSSIA/score-addon-analysis/archive/score-addon-analysis.zip",
+    "name": "Analysis",
+    "raw_name": "score-addon-analysis",
+    "version": "1.0",
+    "short": "Audio analysis toolkit: spectrum, zero-crossings, envelope...",
+    "long": "This addon provides a set of processes that perform various common audio signal analyses",
+    "small": "https://raw.githubusercontent.com/OSSIA/score-addon-tutorial/master/Deployment/icon.png",
+    "key": "9acd6495-a9ad-4984-8ec4-29cd5f97ff49"
+}
