@@ -1,0 +1,3 @@
+[submodule "3rdparty/Gist"]
+	path = 3rdparty/Gist
+	url = https://github.com/adamstark/Gist
