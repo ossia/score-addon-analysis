@@ -18,20 +18,26 @@ struct SpectralDiffHWR
     static const uuid_constexpr auto uuid = make_uuid("9c29887f-e44e-440a-baa1-f0f55a9e57f5");
 
     static const constexpr audio_in audio_ins[]{"in"};
+    static const constexpr auto controls = std::make_tuple(
+          Control::LogFloatSlider{"Gain", 0., 100., 1.},
+          Control::FloatSlider{"Gate", 0., 1., 0.}
+    );
     static const constexpr value_out value_outs[]{"out"};
   };
 
   using State = GistState;
-  using control_policy = ossia::safe_nodes::default_tick;
+  using control_policy = ossia::safe_nodes::last_tick;
 
   static void
   run(const ossia::audio_port& in,
+      float gain,
+      float gate,
       ossia::value_port& out,
       ossia::token_request tk,
       ossia::exec_state_facade e,
       State& st)
   {
-    st.process<&Gist<double>::spectralDifferenceHWR>(in, out, tk, e);
+    st.process<&Gist<double>::spectralDifferenceHWR>(in, gain, gate, out, tk, e);
   }
 };
 }

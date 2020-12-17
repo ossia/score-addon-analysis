@@ -18,8 +18,10 @@ struct RMS
     static const uuid_constexpr auto uuid = make_uuid("5d4057ff-d8d0-4d66-9e0f-55675e3323be");
 
     static const constexpr audio_in audio_ins[]{"in"};
-    static const constexpr auto controls
-        = std::make_tuple(Control::LogFloatSlider{"Gain", 0., 100., 1.});
+    static const constexpr auto controls = std::make_tuple(
+          Control::LogFloatSlider{"Gain", 0., 100., 1.},
+          Control::FloatSlider{"Gate", 0., 1., 0.}
+    );
 
     static const constexpr value_out value_outs[]{"out"};
   };
@@ -30,12 +32,13 @@ struct RMS
   static void
   run(const ossia::audio_port& in,
       float gain,
+      float gate,
       ossia::value_port& out,
       ossia::token_request tk,
       ossia::exec_state_facade e,
       State& st)
   {
-    st.process<&Gist<double>::rootMeanSquare>(in, gain, out, tk, e);
+    st.process<&Gist<double>::rootMeanSquare>(in, gain, gate, out, tk, e);
   }
 };
 struct Peak
@@ -52,8 +55,10 @@ struct Peak
     static const uuid_constexpr auto uuid = make_uuid("a14c8ced-25e6-4c89-ac45-63750cbb87fd");
 
     static const constexpr audio_in audio_ins[]{"in"};
-    static const constexpr auto controls
-    = std::make_tuple(Control::LogFloatSlider{"Gain", 0., 100., 1.});
+    static const constexpr auto controls = std::make_tuple(
+          Control::LogFloatSlider{"Gain", 0., 100., 1.},
+          Control::FloatSlider{"Gate", 0., 1., 0.}
+    );
 
     static const constexpr value_out value_outs[]{"out"};
   };
@@ -64,12 +69,13 @@ struct Peak
   static void
   run(const ossia::audio_port& in,
       float gain,
+      float gate,
       ossia::value_port& out,
       ossia::token_request tk,
       ossia::exec_state_facade e,
       State& st)
   {
-    st.process<&Gist<double>::peakEnergy>(in, gain, out, tk, e);
+    st.process<&Gist<double>::peakEnergy>(in, gain, gate, out, tk, e);
   }
 };
 }

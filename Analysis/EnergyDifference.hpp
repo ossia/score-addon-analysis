@@ -18,20 +18,26 @@ struct EnergyDifference
     static const uuid_constexpr auto uuid = make_uuid("1c15b7d4-fa06-4eb2-b59f-39758308d4f8");
 
     static const constexpr audio_in audio_ins[]{"in"};
+    static const constexpr auto controls = std::make_tuple(
+          Control::LogFloatSlider{"Gain", 0., 100., 1.},
+          Control::FloatSlider{"Gate", 0., 1., 0.}
+    );
     static const constexpr value_out value_outs[]{"out"};
   };
 
   using State = GistState;
-  using control_policy = ossia::safe_nodes::default_tick;
+  using control_policy = ossia::safe_nodes::last_tick;
 
   static void
   run(const ossia::audio_port& in,
+      float gain,
+      float gate,
       ossia::value_port& out,
       ossia::token_request tk,
       ossia::exec_state_facade e,
       State& st)
   {
-    st.process<&Gist<double>::energyDifference>(in, out, tk, e);
+    st.process<&Gist<double>::energyDifference>(in, gain, gate, out, tk, e);
   }
 };
 }
