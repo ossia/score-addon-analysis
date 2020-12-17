@@ -1,7 +1,7 @@
 #!/bin/bash
 rm -rf release
 mkdir -p release
-cp -rf Analysis *.{hpp,cpp,json} release/
+cp -rf Analysis *.{hpp,cpp,json} CMakeLists.txt release/
 mkdir -p release/3rdparty/Gist
 cp -rf 3rdparty/Gist/src \
        3rdparty/Gist/LICENSE.txt \
