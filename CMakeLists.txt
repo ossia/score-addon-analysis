@@ -1,9 +1,7 @@
 project(score_plugin_analysis LANGUAGES CXX)
 
-find_path(FFTW3_INCLUDEDIR fftw3.h)
-find_library(FFTW3_LIBRARY fftw3)
-if(NOT (FFTW3_INCLUDEDIR AND FFTW3_LIBRARY))
-  message(FATAL_ERROR "Analysis needs FFTW")
+if(NOT "${OSSIA_FFT}" STREQUAL "DOUBLE")
+  message(FATAL_ERROR "Analysis needs FFTW (double)")
   return()
 endif()
 
@@ -31,7 +29,9 @@ add_library(
 )
 
 target_compile_definitions(score_plugin_analysis PRIVATE USE_FFTW=1)
-target_include_directories(score_plugin_analysis PRIVATE 3rdparty/Gist/src "${FFTW3_INCLUDEDIR}")
-target_link_libraries(score_plugin_analysis PUBLIC score_plugin_engine "${FFTW3_LIBRARY}")
+target_include_directories(score_plugin_analysis PRIVATE 3rdparty/Gist/src)
+target_link_libraries(score_plugin_analysis PUBLIC score_plugin_engine ${FFTW3_LIBRARY})
 
 setup_score_plugin(score_plugin_analysis)
+
+
