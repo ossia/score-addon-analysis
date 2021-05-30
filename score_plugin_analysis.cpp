@@ -1,9 +1,6 @@
 // This is an open source non-commercial project. Dear PVS-Studio, please check
 // it. PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
-#if !defined(USE_FFTW)
-#define USE_FFTW 1
-#endif
 #include "score_plugin_analysis.hpp"
 
 #include <score/plugins/FactorySetup.hpp>

@@ -27,7 +27,6 @@ struct GistState
   , bufferSize{bufferSize}
   , rate{rate}
   {
-    out_val = output;
     gist.reserve(2);
     gist.emplace_back(bufferSize, rate);
     gist.emplace_back(bufferSize, rate);
