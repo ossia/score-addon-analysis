@@ -31,7 +31,7 @@ jobs:
           mkdir build-debug
           cd build-debug
           export PATH=/c/ossia-sdk/llvm/bin:$PATH
-          cmake ../addon -DCMAKE_BUILD_TYPE=Debug -DSCORE_SOURCE_DIR=../score -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+          cmake ../addon -GNinja -DCMAKE_BUILD_TYPE=Debug -DSCORE_SOURCE_DIR=../score -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_UNITY_BUILD=1
           cmake --build .
 
       - name: Build release
@@ -40,7 +40,7 @@ jobs:
           mkdir build-release
           cd build-release
           export PATH=/c/ossia-sdk/llvm/bin:$PATH
-          cmake ../addon -DCMAKE_BUILD_TYPE=Release -DSCORE_SOURCE_DIR=../score -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+          cmake ../addon -GNinja -DCMAKE_BUILD_TYPE=Release -DSCORE_SOURCE_DIR=../score -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_UNITY_BUILD=1
           cmake --build .
 
   mac:
