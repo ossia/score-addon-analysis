@@ -22,9 +22,11 @@ jobs:
           path: score
 
       - name: Download SDK
+        shell: bash
         run: score/tools/fetch-sdk.sh
 
       - name: Build debug
+        shell: bash
         run: |
           mkdir build-debug
           cd build-debug
@@ -33,6 +35,7 @@ jobs:
           cmake --build .
 
       - name: Build release
+        shell: bash
         run: |
           mkdir build-release
           cd build-release
