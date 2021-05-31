@@ -75,7 +75,7 @@ jobs:
           cmake ../addon -DCMAKE_BUILD_TYPE=Release -DSCORE_SOURCE_DIR=../score
           cmake --build .
 
-  mac:
+  ubuntu:
     name: Ubuntu
     runs-on: ubuntu-latest
 
