@@ -1,0 +1,48 @@
+name: Linux distro build
+
+on: push
+
+jobs:
+  windows:
+    name: Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Download SDK
+        shell: powershell
+        run: |
+          c:
+          mkdir c:\ossia-sdk
+          cd c:\ossia-sdk
+          $WebClient = New-Object System.Net.WebClient
+          $WebClient.DownloadFile("https://github.com/ossia/sdk/releases/download/sdk21/sdk-mingw.7z", "C:\ossia-sdk\sdk-mingw.7z")
+          7z x sdk-mingw.7z
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+          path: addon
+
+      - name: Checkout score
+        uses: actions/checkout@v2
+        with:
+          repository: ossia/score
+          submodules: "recursive"
+          path: score
+
+      - name: Build debug
+        run: |
+          mkdir build-debug
+          cd build-debug
+          export PATH=/c/ossia-sdk/llvm/bin:$PATH
+          cmake ../addon -DCMAKE_BUILD_TYPE=Debug -DSCORE_SOURCE_DIR=../score -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+          cmake --build .
+
+      - name: Build release
+        run: |
+          mkdir build-release
+          cd build-release
+          export PATH=/c/ossia-sdk/llvm/bin:$PATH
+          cmake ../addon -DCMAKE_BUILD_TYPE=Release -DSCORE_SOURCE_DIR=../score -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+          cmake --build .
