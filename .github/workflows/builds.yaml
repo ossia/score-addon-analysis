@@ -1,8 +1,6 @@
-name: Linux distro build
+name: CMake build
 
 on: push
-
-env:
 
 jobs:
   build:
@@ -15,33 +13,32 @@ jobs:
           - {
               name: "Windows",
               os: windows-latest,
-              path: /c/ossia-sdk/llvm/bin,
-              common_flags: -GNinja -DCMAKE_C_COMPILER=c:/ossia-sdk/llvm/bin/clang.exe -DCMAKE_CXX_COMPILER=c:/ossia-sdk/llvm/bin/clang++.exe -DCMAKE_UNITY_BUILD=1,
-              debug_flags: -DCMAKE_BUILD_TYPE=Debug,
-              release_flags: -DCMAKE_BUILD_TYPE=Release,
-              dependencies: cinst ninja,
-              sdk: /c/ossia-sdk,
+              path: "/c/ossia-sdk/llvm/bin",
+              common_flags: "-GNinja -DCMAKE_C_COMPILER=c:/ossia-sdk/llvm/bin/clang.exe -DCMAKE_CXX_COMPILER=c:/ossia-sdk/llvm/bin/clang++.exe -DCMAKE_UNITY_BUILD=1",
+              debug_flags: "-DCMAKE_BUILD_TYPE=Debug",
+              release_flags: "-DCMAKE_BUILD_TYPE=Release",
+              dependencies: "cinst ninja",
+              sdk: "/c/ossia-sdk",
             }
           - {
               name: "Ubuntu",
               os: ubuntu-latest,
-              path: /opt/ossia-sdk/llvm/bin/,
-              common_flags: -GNinja -DCMAKE_C_COMPILER=/opt/ossia-sdk/llvm/bin/clang -DCMAKE_CXX_COMPILER=/opt/ossia-sdk/llvm/bin/clang++ -DCMAKE_UNITY_BUILD=1,
-              debug_flags: -DCMAKE_BUILD_TYPE=Debug,
-              release_flags: -DCMAKE_BUILD_TYPE=Release,
-              dependencies: sudo apt install libgl-dev libxkbcommon-dev libxkbcommon-x11-dev,
-              sdk: /opt/ossia-sdk,
+              path: "/opt/ossia-sdk/llvm/bin",
+              common_flags: "-GNinja -DCMAKE_C_COMPILER=/opt/ossia-sdk/llvm/bin/clang -DCMAKE_CXX_COMPILER=/opt/ossia-sdk/llvm/bin/clang++ -DCMAKE_UNITY_BUILD=1",
+              debug_flags: "-DCMAKE_BUILD_TYPE=Debug",
+              release_flags: "-DCMAKE_BUILD_TYPE=Release",
+              dependencies: "sudo apt install libgl-dev libxkbcommon-dev libxkbcommon-x11-dev",
+              sdk: "/opt/ossia-sdk",
             }
           - {
               name: "macOS",
               os: macos-latest,
-              common_flags: -GNinja -DCMAKE_UNITY_BUILD=1,
-              debug_flags: -DCMAKE_BUILD_TYPE=Debug,
-              release_flags: -DCMAKE_BUILD_TYPE=Release,
-              dependencies: cinst ninja,
-              sdk: /opt/ossia-sdk-x86_64,
+              common_flags: "-GNinja -DCMAKE_UNITY_BUILD=1",
+              debug_flags: "-DCMAKE_BUILD_TYPE=Debug",
+              release_flags: "-DCMAKE_BUILD_TYPE=Release",
+              sdk: "/opt/ossia-sdk-x86_64",
             }
-          - { name: "Release", os: ubuntu-latest, sdk: /opt/ossia-sdk }
+          - { name: "Release", os: ubuntu-latest }
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -59,7 +56,7 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: |
-          ${{ matrix.dependencies }}
+          ${{ matrix.config.dependencies }}
 
       - name: Download SDK
         shell: bash
