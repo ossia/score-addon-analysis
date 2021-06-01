@@ -69,7 +69,7 @@ jobs:
           mkdir build-debug
           cd build-debug
 
-          if [[ "${{ matrix.config.path }}" != ""]]; then
+          if [[ "${{ matrix.config.path }}" != "" ]]; then
             export PATH=${{ matrix.config.path }}:$PATH
           fi
 
@@ -87,7 +87,7 @@ jobs:
           mkdir build-release
           cd build-release
 
-          if [[ "${{ matrix.config.path }}" != ""]]; then
+          if [[ "${{ matrix.config.path }}" != "" ]]; then
             export PATH=${{ matrix.config.path }}:$PATH
           fi
 
