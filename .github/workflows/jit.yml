@@ -47,21 +47,23 @@ jobs:
         shell: bash
         run: |
           SCORE_FILENAME=ossia.score-${{ matrix.version }}-${{ matrix.config.score }}
-          hdiutil attach $SCORE_FILENAME
+          /usr/bin/hdiutil convert -quiet $SCORE_FILENAME -format UDTO -o score
+          /usr/bin/hdiutil attach -quiet -nobrowse -noverify -noautoopen -mountpoint /Volumes/score score.cdr
           ls /Volumes
+          ls /Volumes/score
 
       - name: Install score
         if: matrix.config.name == 'Windows'
         shell: bash
         run: |
           SCORE_FILENAME=ossia.score-${{ matrix.version }}-${{ matrix.config.score }}
-          $SCORE_FILENAME /S
+          ./$SCORE_FILENAME /S
           ls "/c/Program Files"
 
       - name: Download SDK
         shell: bash
         run: |
-          SDK_FILENAME=${{ matrix.sdk }}
+          SDK_FILENAME=${{ matrix.config.sdk }}
           curl -L -O "https://github.com/ossia/score/releases/download/v${{ matrix.version }}/$SDK_FILENAME"
           mkdir -p "$HOME/Documents/ossia score library/SDK"
           unzip -qq "$SDK_FILENAME" -d "$HOME/Documents/ossia score library/SDK/${{ matrix.version }}"
@@ -70,6 +72,8 @@ jobs:
         if: matrix.config.name == 'macOS'
         shell: bash
         run: |
+          SCORE_FILENAME=/Volumes/score/score.app/Contents/MacOS/score
+          $SCORE_FILENAME --compile-addon $PWD
 
       - name: Compile
         if: matrix.config.name == 'Windows'
@@ -81,4 +85,4 @@ jobs:
         shell: bash
         run: |
           SCORE_FILENAME=ossia.score-${{ matrix.version }}-${{ matrix.config.score }}
-          $SCORE_FILENAME --compile-addon $PWD
+          ./$SCORE_FILENAME --compile-addon $PWD
