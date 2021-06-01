@@ -23,7 +23,10 @@ jobs:
 
       - name: Download SDK
         shell: bash
-        run: score/tools/fetch-sdk.sh
+        run: |
+          cd score
+          tools/fetch-sdk.sh
+          cinst ninja
 
       - name: Build debug
         shell: bash
@@ -62,7 +65,9 @@ jobs:
           path: score
 
       - name: Download SDK
-        run: score/tools/fetch-sdk.sh
+        run: |
+          cd score
+          tools/fetch-sdk.sh
 
       - name: Build debug
         run: |
@@ -97,7 +102,9 @@ jobs:
           path: score
 
       - name: Download SDK
-        run: score/tools/fetch-sdk.sh
+        run: |
+          cd score
+          tools/fetch-sdk.sh
 
       - name: Build debug
         run: |
