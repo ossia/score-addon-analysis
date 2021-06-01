@@ -2,11 +2,46 @@ name: Linux distro build
 
 on: push
 
+env:
+
 jobs:
-  windows:
-    name: Windows
-    runs-on: windows-latest
-
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {
+              name: "Windows",
+              os: windows-latest,
+              path: /c/ossia-sdk/llvm/bin,
+              common_flags: -GNinja -DCMAKE_C_COMPILER=c:/ossia-sdk/llvm/bin/clang.exe -DCMAKE_CXX_COMPILER=c:/ossia-sdk/llvm/bin/clang++.exe -DCMAKE_UNITY_BUILD=1,
+              debug_flags: -DCMAKE_BUILD_TYPE=Debug,
+              release_flags: -DCMAKE_BUILD_TYPE=Release,
+              dependencies: cinst ninja,
+              sdk: /c/ossia-sdk,
+            }
+          - {
+              name: "Ubuntu",
+              os: ubuntu-latest,
+              path: /opt/ossia-sdk/llvm/bin/,
+              common_flags: -GNinja -DCMAKE_C_COMPILER=/opt/ossia-sdk/llvm/bin/clang -DCMAKE_CXX_COMPILER=/opt/ossia-sdk/llvm/bin/clang++ -DCMAKE_UNITY_BUILD=1,
+              debug_flags: -DCMAKE_BUILD_TYPE=Debug,
+              release_flags: -DCMAKE_BUILD_TYPE=Release,
+              dependencies: sudo apt install libgl-dev libxkbcommon-dev libxkbcommon-x11-dev,
+              sdk: /opt/ossia-sdk,
+            }
+          - {
+              name: "macOS",
+              os: macos-latest,
+              common_flags: -GNinja -DCMAKE_UNITY_BUILD=1,
+              debug_flags: -DCMAKE_BUILD_TYPE=Debug,
+              release_flags: -DCMAKE_BUILD_TYPE=Release,
+              dependencies: cinst ninja,
+              sdk: /opt/ossia-sdk-x86_64,
+            }
+          - { name: "Release", os: ubuntu-latest, sdk: /opt/ossia-sdk }
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -21,20 +56,33 @@ jobs:
           submodules: "recursive"
           path: score
 
+      - name: Install dependencies
+        shell: bash
+        run: |
+          ${{ matrix.dependencies }}
+
       - name: Download SDK
         shell: bash
         run: |
           cd score
           tools/fetch-sdk.sh
-          cinst ninja
 
       - name: Build debug
         shell: bash
         run: |
           mkdir build-debug
           cd build-debug
-          export PATH=/c/ossia-sdk/llvm/bin:$PATH
-          cmake ../addon -GNinja -DCMAKE_BUILD_TYPE=Debug -DSCORE_SOURCE_DIR=../score -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_UNITY_BUILD=1
+
+          if [[ ${{ matrix.config.path }} != ""]]; then
+            export PATH=${{ matrix.config.path }}:$PATH
+          fi
+
+          cmake ../addon \
+            -DSCORE_SOURCE_DIR=../score \
+            -DOSSIA_SDK=${{ matrix.config.sdk }} \
+            ${{ matrix.config.common_flags }} \
+            ${{ matrix.config.debug_flags }}
+
           cmake --build .
 
       - name: Build release
@@ -42,83 +90,14 @@ jobs:
         run: |
           mkdir build-release
           cd build-release
-          export PATH=/c/ossia-sdk/llvm/bin:$PATH
-          cmake ../addon -GNinja -DCMAKE_BUILD_TYPE=Release -DSCORE_SOURCE_DIR=../score -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_UNITY_BUILD=1
-          cmake --build .
 
-  mac:
-    name: Mac
-    runs-on: macos-latest
+          if [[ ${{ matrix.config.path }} != ""]]; then
+            export PATH=${{ matrix.config.path }}:$PATH
+          fi
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          submodules: "recursive"
-          path: addon
+          cmake ../addon \
+            -DSCORE_SOURCE_DIR=../score \
+            ${{ matrix.config.common_flags }} \
+            ${{ matrix.config.release_flags }}
 
-      - name: Checkout score
-        uses: actions/checkout@v2
-        with:
-          repository: ossia/score
-          submodules: "recursive"
-          path: score
-
-      - name: Download SDK
-        run: |
-          cd score
-          tools/fetch-sdk.sh
-
-      - name: Build debug
-        run: |
-          mkdir build-debug
-          cd build-debug
-          cmake ../addon -DCMAKE_BUILD_TYPE=Debug -DSCORE_SOURCE_DIR=../score
-          cmake --build .
-
-      - name: Build release
-        run: |
-          mkdir build-release
-          cd build-release
-          cmake ../addon -DCMAKE_BUILD_TYPE=Release -DSCORE_SOURCE_DIR=../score
-          cmake --build .
-
-  ubuntu:
-    name: Ubuntu
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          submodules: "recursive"
-          path: addon
-
-      - name: Checkout score
-        uses: actions/checkout@v2
-        with:
-          repository: ossia/score
-          submodules: "recursive"
-          path: score
-
-      - name: Download SDK
-        run: |
-          sudo apt install libgl-dev
-          cd score
-          tools/fetch-sdk.sh
-
-      - name: Build debug
-        run: |
-          mkdir build-debug
-          cd build-debug
-          export PATH=/opt/ossia-sdk/llvm/bin:$PATH
-          cmake ../addon -DCMAKE_BUILD_TYPE=Debug -DSCORE_SOURCE_DIR=../score -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
-          cmake --build .
-
-      - name: Build release
-        run: |
-          mkdir build-release
-          cd build-release
-          export PATH=/opt/ossia-sdk/llvm/bin:$PATH
-          cmake ../addon -DCMAKE_BUILD_TYPE=Release -DSCORE_SOURCE_DIR=../score -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
           cmake --build .
