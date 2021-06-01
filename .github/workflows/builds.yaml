@@ -103,6 +103,7 @@ jobs:
 
       - name: Download SDK
         run: |
+          sudo apt install libgl-dev
           cd score
           tools/fetch-sdk.sh
 
