@@ -1,7 +1,7 @@
 name: JIT
 
 on: push
-https://github.com/ossia/score/releases/download/v${{ matrix.version }}/ossia.score-3.0.0-a36-
+
 jobs:
   build:
     name: ${{ matrix.config.name }}
@@ -9,25 +9,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [ 3.0.0-a36 ]
+        version: [3.0.0-a36]
         config:
           - {
               name: "Windows",
               os: windows-latest,
               score: "win64.exe",
-              sdk: windows-sdk.zip
+              sdk: windows-sdk.zip,
             }
           - {
               name: "Ubuntu",
               os: ubuntu-latest,
               score: "linux-amd64.AppImage",
-              sdk: linux-sdk.zip
+              sdk: linux-sdk.zip,
             }
           - {
               name: "macOS",
               os: macos-latest,
               score: "macOS.dmg",
-              sdk: mac-sdk.zip
+              sdk: mac-sdk.zip,
             }
 
     steps:
@@ -42,6 +42,22 @@ jobs:
           SCORE_FILENAME=ossia.score-${{ matrix.version }}-${{ matrix.config.score }}
           curl -L -O "https://github.com/ossia/score/releases/download/v${{ matrix.version }}/$SCORE_FILENAME"
 
+      - name: Install score
+        if: matrix.config.name == 'macOS'
+        shell: bash
+        run: |
+          SCORE_FILENAME=ossia.score-${{ matrix.version }}-${{ matrix.config.score }}
+          hdiutil attach $SCORE_FILENAME
+          ls /Volumes
+
+      - name: Install score
+        if: matrix.config.name == 'Windows'
+        shell: bash
+        run: |
+          SCORE_FILENAME=ossia.score-${{ matrix.version }}-${{ matrix.config.score }}
+          $SCORE_FILENAME /S
+          ls "/c/Program Files"
+
       - name: Download SDK
         shell: bash
         run: |
@@ -49,3 +65,20 @@ jobs:
           curl -L -O "https://github.com/ossia/score/releases/download/v${{ matrix.version }}/$SDK_FILENAME"
           mkdir -p "$HOME/Documents/ossia score library/SDK"
           unzip -qq "$SDK_FILENAME" -d "$HOME/Documents/ossia score library/SDK/${{ matrix.version }}"
+
+      - name: Compile
+        if: matrix.config.name == 'macOS'
+        shell: bash
+        run: |
+
+      - name: Compile
+        if: matrix.config.name == 'Windows'
+        shell: bash
+        run: |
+
+      - name: Compile
+        if: matrix.config.name == 'Linux'
+        shell: bash
+        run: |
+          SCORE_FILENAME=ossia.score-${{ matrix.version }}-${{ matrix.config.score }}
+          $SCORE_FILENAME --compile-addon $PWD
