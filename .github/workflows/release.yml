@@ -1,0 +1,15 @@
+name: Release
+
+on: push
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+      - name: Release
+        run: ./release.sh

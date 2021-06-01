@@ -38,7 +38,6 @@ jobs:
               release_flags: "-DCMAKE_BUILD_TYPE=Release",
               sdk: "/opt/ossia-sdk-x86_64",
             }
-          - { name: "Release", os: ubuntu-latest }
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
