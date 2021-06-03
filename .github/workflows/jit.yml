@@ -87,4 +87,5 @@ jobs:
         shell: bash
         run: |
           SCORE_FILENAME=ossia.score-${{ matrix.version }}-${{ matrix.config.score }}
+          chmod +x $SCORE_FILENAME
           ./$SCORE_FILENAME --no-gui --compile-addon $PWD
