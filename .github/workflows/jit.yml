@@ -85,6 +85,7 @@ jobs:
         if: matrix.config.name == 'Ubuntu'
         shell: bash
         run: |
+          apt install libasound2 libxcb1 libglvnd0 libx11-6 libxcb-glx0 libgl1 libdbus-1-3 libxcb-xkb1 libxkbcommon-x11-0 libxcb-xkb1
           SCORE_FILENAME=ossia.score-${{ matrix.version }}-${{ matrix.config.score }}
           chmod +x $SCORE_FILENAME
           ./$SCORE_FILENAME --no-gui --compile-addon $PWD
