@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [3.0.0-a36]
+        version: [3.0.0-a37]
         config:
           - {
               name: "Windows",
@@ -57,8 +57,8 @@ jobs:
         shell: bash
         run: |
           SCORE_FILENAME=ossia.score-${{ matrix.version }}-${{ matrix.config.score }}
-          ./$SCORE_FILENAME /S
-          ls "/c/Program Files"
+          ./$SCORE_FILENAME /S /D=c:\\score
+          ls "/c/score"
 
       - name: Download SDK
         shell: bash
@@ -73,16 +73,18 @@ jobs:
         shell: bash
         run: |
           SCORE_FILENAME=/Volumes/score/score.app/Contents/MacOS/score
-          $SCORE_FILENAME --compile-addon $PWD
+          $SCORE_FILENAME --no-gui --compile-addon $PWD
 
       - name: Compile
         if: matrix.config.name == 'Windows'
         shell: bash
         run: |
+          SCORE_FILENAME=/c/score/score.exe
+          ./$SCORE_FILENAME --no-gui --compile-addon $PWD
 
       - name: Compile
-        if: matrix.config.name == 'Linux'
+        if: matrix.config.name == 'Ubuntu'
         shell: bash
         run: |
           SCORE_FILENAME=ossia.score-${{ matrix.version }}-${{ matrix.config.score }}
-          ./$SCORE_FILENAME --compile-addon $PWD
+          ./$SCORE_FILENAME --no-gui --compile-addon $PWD
