@@ -76,11 +76,9 @@ jobs:
 
       - name: Compile
         if: matrix.config.name == 'Windows'
-        shell: bash
+        shell: cmd
         run: |
-          ./score.exe --no-gui --compile-addon $PWD &          
-          sleep 50
-          taskkill /IM score.exe /F
+          score.exe --no-gui --compile-addon "%cd%"
 
       - name: Compile
         if: matrix.config.name == 'Ubuntu'
