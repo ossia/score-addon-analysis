@@ -79,6 +79,8 @@ jobs:
         if: matrix.config.name == 'Windows'
         shell: cmd
         run: |
+          set QT_FORCE_STDERR_LOGGING=1
+          set QT_ASSUME_STDERR_HAS_CONSOLE=1
           score.exe --no-gui --compile-addon "%cd%"
 
       - name: Compile
