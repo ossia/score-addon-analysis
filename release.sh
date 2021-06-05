@@ -4,7 +4,7 @@ mkdir -p release
 
 cp -rf Analysis *.{hpp,cpp,txt} release/
 
-VERSION=$(git tag)
+VERSION=$(git describe --abbrev=0 --tags | sed 's/v//')
 cat addon.json | sed  "s/\$VERSION/$VERSION/g" > release/addon.json
 
 mkdir -p release/3rdparty/Gist
