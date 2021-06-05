@@ -4,7 +4,7 @@ on: push
 
 jobs:
   build:
-    name: ${{ matrix.config.name }}
+    name: "${{ matrix.config.name }} ${{ matrix.config.version }}"
     runs-on: ${{ matrix.config.os }}
     timeout-minutes: 10
     strategy:
@@ -93,7 +93,7 @@ jobs:
           xvfb-run --auto-servernum ./$SCORE_FILENAME --no-gui --compile-addon $PWD
 
   build_head:
-    name: ${{ matrix.config.name }}
+    name: "${{ matrix.config.name }} (latest)"
     runs-on: ${{ matrix.config.os }}
     timeout-minutes: 10
     strategy:
