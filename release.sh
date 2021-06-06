@@ -2,10 +2,7 @@
 rm -rf release
 mkdir -p release
 
-cp -rf Analysis *.{hpp,cpp,txt} release/
-
-VERSION=$(git describe --abbrev=0 --tags | sed 's/v//')
-cat addon.json | sed  "s/\$VERSION/$VERSION/g" > release/addon.json
+cp -rf Analysis *.{hpp,cpp,txt,json} LICENSE release/
 
 mkdir -p release/3rdparty/Gist
 cp -rf 3rdparty/Gist/src \
