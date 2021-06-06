@@ -5,7 +5,7 @@
 
 #include <score/plugins/FactorySetup.hpp>
 
-#include <Engine/Node/PdNode.hpp>
+#include <Engine/Node/SimpleApi.hpp>
 #include <Analysis/Centroid.hpp>
 #include <Analysis/ComplexSpectralDifference.hpp>
 #include <Analysis/Crest.hpp>
