@@ -59,6 +59,19 @@ add_library(
   AudioOracle/AudioOracleZCSFactory.hpp
   AudioOracle/AudioOracleRMSFactory.cpp
   AudioOracle/AudioOracleRMSFactory.hpp
+
+  VariableMarkovOracle/VariableMarkovOracleFactory.cpp
+  VariableMarkovOracle/VariableMarkovOracleFactory.hpp
+  VariableMarkovOracle/VariableMarkovOracleMFCCFactory.cpp
+  VariableMarkovOracle/VariableMarkovOracleMFCCFactory.hpp
+  VariableMarkovOracle/VariableMarkovOraclePitchFactory.cpp
+  VariableMarkovOracle/VariableMarkovOraclePitchFactory.hpp
+  VariableMarkovOracle/VariableMarkovOracleCentroidFactory.cpp
+  VariableMarkovOracle/VariableMarkovOracleCentroidFactory.hpp
+  VariableMarkovOracle/VariableMarkovOracleZCSFactory.cpp
+  VariableMarkovOracle/VariableMarkovOracleZCSFactory.hpp
+  VariableMarkovOracle/VariableMarkovOracleRMSFactory.cpp
+  VariableMarkovOracle/VariableMarkovOracleRMSFactory.hpp
 )
 
 target_compile_definitions(score_plugin_analysis PRIVATE USE_OSSIA_FFT=1)

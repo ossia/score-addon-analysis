@@ -28,6 +28,13 @@
 #include <AudioOracle/AudioOracleSpectralCentroidFactory.hpp>
 #include <AudioOracle/AudioOracleZCSFactory.hpp>
 
+#include <VariableMarkovOracle/VariableMarkovOracleFactory.hpp>
+#include <VariableMarkovOracle/VariableMarkovOracleMFCCFactory.hpp>
+#include <VariableMarkovOracle/VariableMarkovOracleRMSFactory.hpp>
+#include <VariableMarkovOracle/VariableMarkovOraclePitchFactory.hpp>
+#include <VariableMarkovOracle/VariableMarkovOracleCentroidFactory.hpp>
+#include <VariableMarkovOracle/VariableMarkovOracleZCSFactory.hpp>
+
 #include <score_plugin_engine.hpp>
 
 score_plugin_analysis::score_plugin_analysis() = default;
@@ -47,7 +54,13 @@ std::vector<std::unique_ptr<score::InterfaceBase>> score_plugin_analysis::factor
            AudioOracleRMS::GainDoubler,
            AudioOraclePitch::GainDoubler,
            AudioOracleSpectralCentroid::GainDoubler,
-           AudioOracleZCS::GainDoubler
+           AudioOracleZCS::GainDoubler,
+           VariableMarkovOracle::GainDoubler,
+           VariableMarkovOracleMFCC::GainDoubler,
+           VariableMarkovOracleRMS::GainDoubler,
+           VariableMarkovOraclePitch::GainDoubler,
+           VariableMarkovOracleCentroid::GainDoubler,
+           VariableMarkovOracleZCS::GainDoubler
         >>(ctx, key);
   }
   else
