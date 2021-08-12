@@ -46,11 +46,24 @@ add_library(
   3rdparty/Gist/src/WindowFunctions.h
   3rdparty/Gist/src/Yin.cpp
   3rdparty/Gist/src/Yin.h
+
+  AudioOracle/AudioOracleFactory.cpp
+  AudioOracle/AudioOracleFactory.hpp
+  AudioOracle/AudioOracleMFCCFactory.cpp
+  AudioOracle/AudioOracleMFCCFactory.hpp
+  AudioOracle/AudioOraclePitchFactory.cpp
+  AudioOracle/AudioOraclePitchFactory.hpp
+  AudioOracle/AudioOracleSpectralCentroidFactory.cpp
+  AudioOracle/AudioOracleSpectralCentroidFactory.hpp
+  AudioOracle/AudioOracleZCSFactory.cpp
+  AudioOracle/AudioOracleZCSFactory.hpp
+  AudioOracle/AudioOracleRMSFactory.cpp
+  AudioOracle/AudioOracleRMSFactory.hpp
 )
 
 target_compile_definitions(score_plugin_analysis PRIVATE USE_OSSIA_FFT=1)
-target_include_directories(score_plugin_analysis PRIVATE 3rdparty/Gist/src)
-target_link_libraries(score_plugin_analysis PUBLIC score_plugin_engine ${FFTW3_LIBRARY})
+target_include_directories(score_plugin_analysis PRIVATE 3rdparty/Gist/src 3rdparty/)
+target_link_libraries(score_plugin_analysis PUBLIC score_plugin_engine score_plugin_media ${FFTW3_LIBRARY})
 
 setup_score_plugin(score_plugin_analysis)
 
