@@ -13,7 +13,21 @@ endif()
 
 add_library(
   score_plugin_analysis
+  Analysis/Centroid.hpp
+  Analysis/ComplexSpectralDifference.hpp
+  Analysis/Crest.hpp
+  Analysis/EnergyDifference.hpp
   Analysis/Envelope.hpp
+  Analysis/Flatness.hpp
+  Analysis/GistState.hpp
+  Analysis/HighFrequencyContent.hpp
+  Analysis/Kurtosis.hpp
+  Analysis/MFCC.hpp
+  Analysis/Pitch.hpp
+  Analysis/Rolloff.hpp
+  Analysis/SpectralDifference.hpp
+  Analysis/SpectralDifference_HWR.hpp
+  Analysis/ZeroCrossing.hpp
 
   score_plugin_analysis.hpp
   score_plugin_analysis.cpp
