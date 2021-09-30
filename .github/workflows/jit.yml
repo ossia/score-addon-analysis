@@ -65,8 +65,8 @@ jobs:
         run: |
           SDK_FILENAME=${{ matrix.config.sdk }}
           curl -L -O "https://github.com/ossia/score/releases/download/v${{ matrix.version }}/$SDK_FILENAME"
-          mkdir -p "$HOME/Documents/ossia score library/SDK"
-          unzip -qq "$SDK_FILENAME" -d "$HOME/Documents/ossia score library/SDK/${{ matrix.version }}"
+          mkdir -p "$HOME/Documents/ossia/score/sdk"
+          unzip -qq "$SDK_FILENAME" -d "$HOME/Documents/ossia/score/sdk/${{ matrix.version }}"
 
       - name: Compile
         if: matrix.config.name == 'macOS'
@@ -153,7 +153,7 @@ jobs:
         run: |
           SDK_FILENAME=${{ matrix.config.sdk }}
           curl -L -O "https://github.com/ossia/score/releases/download/continuous/$SDK_FILENAME"
-          mkdir -p "$HOME/Documents/ossia score library/SDK"
+          mkdir -p "$HOME/Documents/ossia/score/sdk"
           unzip -qq "$SDK_FILENAME" -d "sdk"
 
       - name: Compile
