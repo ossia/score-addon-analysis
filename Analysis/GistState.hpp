@@ -83,7 +83,9 @@ struct GistState
       ++it;
       ++git;
     }
-    out_port.write_value(out_val, e.physical_start(tk));
+
+    const auto [tick_start, d] = e.timings(tk);
+    out_port.write_value(out_val, tick_start);
   }
 
   template<auto Func>
@@ -111,7 +113,8 @@ struct GistState
       ++it;
       ++git;
     }
-    out_port.write_value(out_val, e.physical_start(tk));
+    const auto [tick_start, d] = e.timings(tk);
+    out_port.write_value(out_val, tick_start);
   }
 
   template<auto Func>
@@ -142,7 +145,9 @@ struct GistState
       ++it;
       ++git;
     }
-    out_port.write_value(out_val, e.physical_start(tk));
+
+    const auto [tick_start, d] = e.timings(tk);
+    out_port.write_value(out_val, tick_start);
   }
 
   template<auto Func>
