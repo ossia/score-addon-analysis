@@ -49,12 +49,12 @@ struct GistState
 
   void preprocess(const ossia::audio_port& audio)
   {
-    output.resize(audio.samples.size());
-    if(gist.size() < audio.samples.size())
+    output.resize(audio.channels());
+    if(gist.size() < audio.channels())
     {
       gist.clear();
-      gist.reserve(audio.samples.size());
-      while(gist.size() < audio.samples.size())
+      gist.reserve(audio.channels());
+      while(gist.size() < audio.channels())
         gist.emplace_back(bufferSize, rate);
     }
   }
@@ -69,7 +69,7 @@ struct GistState
     preprocess(audio);
     auto it = output.begin();
     auto git = gist.begin();
-    for(auto& channel : audio.samples)
+    for(auto& channel : audio.get())
     {
       if(bufferSize == channel.size())
       {
@@ -99,12 +99,12 @@ struct GistState
     preprocess(audio);
     auto it = output.begin();
     auto git = gist.begin();
-    for(auto& channel : audio.samples)
+    for(auto& channel : audio.get())
     {
       if(bufferSize == channel.size())
       {
-        git->processAudioFrame(channel.data(), channel.size());
-        *it = float((git->*Func)()) * gain;
+        git->processAudioFrame(channel.data(), channel.size(), gain, 0.0);
+        *it = float((git->*Func)());
       }
       else
       {
@@ -129,14 +129,13 @@ struct GistState
     preprocess(audio);
     auto it = output.begin();
     auto git = gist.begin();
-    for(auto& channel : audio.samples)
+    for(auto& channel : audio.get())
     {
       if(bufferSize == channel.size())
       {
-        git->processAudioFrame(channel.data(), channel.size());
-        *it = float(((*git).*Func)()) * gain;
-        if(*it < gate)
-          *it = 0.f;
+        git->processAudioFrame(channel.data(), channel.size(), gain, gate);
+        float r{};
+        *it = r = float(((*git).*Func)());
       }
       else
       {
@@ -149,6 +148,44 @@ struct GistState
     const auto [tick_start, d] = e.timings(tk);
     out_port.write_value(out_val, tick_start);
   }
+    template<auto Func>
+    void process(
+       const ossia::audio_port& audio,
+       float gain,
+       float gate,
+       ossia::value_port& out_port,
+       ossia::value_port& pulse_port,
+       const ossia::token_request& tk,
+       const ossia::exec_state_facade& e)
+    {
+      preprocess(audio);
+
+      bool bang = false;
+      auto it = output.begin();
+      auto git = gist.begin();
+      for(auto& channel : audio.get())
+      {
+        if(bufferSize == channel.size())
+        {
+          git->processAudioFrame(channel.data(), channel.size(), gain, gate);
+          float r{};
+          *it = r = float(((*git).*Func)());
+          bang |= (r > 1.f);
+        }
+        else
+        {
+          *it = 0.f;
+        }
+        ++it;
+        ++git;
+      }
+
+      const auto [tick_start, d] = e.timings(tk);
+      out_port.write_value(out_val, tick_start);
+      if(bang) {
+        pulse_port.write_value(ossia::impulse{}, tick_start);
+      }
+    }
 
   template<auto Func>
   void processVector(
@@ -157,13 +194,13 @@ struct GistState
       const ossia::token_request& tk,
       const ossia::exec_state_facade& e)
   {
-    while(gist.size() < audio.samples.size())
+    while(gist.size() < audio.channels())
       gist.emplace_back(bufferSize, rate);
 
-    mfcc.samples.resize(audio.samples.size());
-    auto it = mfcc.samples.begin();
+    mfcc.set_channels(audio.channels());
+    auto it = mfcc.get().begin();
     auto git = gist.begin();
-    for(auto& channel : audio.samples)
+    for(auto& channel : audio.get())
     {
       if(bufferSize == channel.size())
       {
@@ -181,6 +218,40 @@ struct GistState
       ++git;
     }
   }
+
+    template<auto Func>
+    void processVector(
+        const ossia::audio_port& audio,
+        float gain,
+        float gate,
+        ossia::audio_port& mfcc,
+        const ossia::token_request& tk,
+        const ossia::exec_state_facade& e)
+    {
+      while(gist.size() < audio.channels())
+        gist.emplace_back(bufferSize, rate);
+
+      mfcc.set_channels(audio.channels());
+      auto it = mfcc.get().begin();
+      auto git = gist.begin();
+      for(auto& channel : audio.get())
+      {
+        if(bufferSize == channel.size())
+        {
+          git->processAudioFrame(channel.data(), channel.size(), gain, gate);
+
+          auto& res = ((*git).*Func)();
+          it->assign(res.begin(), res.end());
+        }
+        else
+        {
+          it->clear();
+        }
+
+        ++it;
+        ++git;
+      }
+    }
 
   ossia::small_vector<Gist<double>, 2> gist;
   ossia::value out_val;

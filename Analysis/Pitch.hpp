@@ -8,9 +8,9 @@ struct Pitch
 {
   struct Metadata : Control::Meta_base
   {
-    static const constexpr auto prettyName = "Pitch";
+    static const constexpr auto prettyName = "Pitch detector";
     static const constexpr auto objectKey = "Pitch";
-    static const constexpr auto category = "Analysis";
+    static const constexpr auto category = "Analysis/Pitch";
     static const constexpr auto author = "ossia score, Gist library";
     static const constexpr auto kind = Process::ProcessCategory::Analyzer;
     static const constexpr auto description = "Get the pitch of a signal";
@@ -22,7 +22,7 @@ struct Pitch
   };
 
   using State = GistState;
-  using control_policy = ossia::safe_nodes::default_tick;
+  using control_policy = ossia::safe_nodes::last_tick;
 
   static void
   run(const ossia::audio_port& in,

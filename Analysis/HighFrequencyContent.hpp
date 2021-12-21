@@ -10,7 +10,7 @@ struct Hfq
   {
     static const constexpr auto prettyName = "High-Frequency Content";
     static const constexpr auto objectKey = "Hfq";
-    static const constexpr auto category = "Analysis";
+    static const constexpr auto category = "Analysis/Onsets";
     static const constexpr auto author = "ossia score, Gist library";
     static const constexpr auto kind = Process::ProcessCategory::Analyzer;
     static const constexpr auto description = "Get the high-frequency content of a signal";
@@ -18,11 +18,11 @@ struct Hfq
     static const uuid_constexpr auto uuid = make_uuid("75f12985-63b6-4dc1-946f-a65a3dc54eed");
 
     static const constexpr audio_in audio_ins[]{"in"};
-    static const constexpr auto controls = std::make_tuple(
+    static const constexpr auto controls = tuplet::make_tuple(
           Control::LogFloatSlider{"Gain", 0., 100., 1.},
           Control::FloatSlider{"Gate", 0., 1., 0.}
     );
-    static const constexpr value_out value_outs[]{"out"};
+    static const constexpr value_out value_outs[]{"out", "pulse"};
   };
 
   using State = GistState;
@@ -33,11 +33,12 @@ struct Hfq
       float gain,
       float gate,
       ossia::value_port& out,
+      ossia::value_port& pulse,
       ossia::token_request tk,
       ossia::exec_state_facade e,
       State& st)
   {
-    st.process<&Gist<double>::highFrequencyContent>(in, gain, gate, out, tk, e);
+    st.process<&Gist<double>::highFrequencyContent>(in, gain, gate, out, pulse, tk, e);
   }
 };
 }
