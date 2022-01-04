@@ -20,6 +20,21 @@
 #include <Analysis/SpectralDifference_HWR.hpp>
 #include <Analysis/Envelope.hpp>
 #include <Analysis/ZeroCrossing.hpp>
+
+#include <AudioOracle/AudioOracleFactory.hpp>
+#include <AudioOracle/AudioOracleMFCCFactory.hpp>
+#include <AudioOracle/AudioOracleRMSFactory.hpp>
+#include <AudioOracle/AudioOraclePitchFactory.hpp>
+#include <AudioOracle/AudioOracleSpectralCentroidFactory.hpp>
+#include <AudioOracle/AudioOracleZCSFactory.hpp>
+
+#include <VariableMarkovOracle/VariableMarkovOracleFactory.hpp>
+#include <VariableMarkovOracle/VariableMarkovOracleMFCCFactory.hpp>
+#include <VariableMarkovOracle/VariableMarkovOracleRMSFactory.hpp>
+#include <VariableMarkovOracle/VariableMarkovOraclePitchFactory.hpp>
+#include <VariableMarkovOracle/VariableMarkovOracleCentroidFactory.hpp>
+#include <VariableMarkovOracle/VariableMarkovOracleZCSFactory.hpp>
+
 #include <score_plugin_engine.hpp>
 
 score_plugin_analysis::score_plugin_analysis() = default;
@@ -29,6 +44,27 @@ std::vector<std::unique_ptr<score::InterfaceBase>> score_plugin_analysis::factor
     const score::ApplicationContext& ctx,
     const score::InterfaceKey& key) const
 {
+  if(key == Process::OfflineAction::static_interfaceKey())
+  {
+    return instantiate_factories<
+        score::ApplicationContext,
+        FW<Process::OfflineAction,
+           AudioOracle::GainDoubler,
+           AudioOracleMFCC::GainDoubler,
+           AudioOracleRMS::GainDoubler,
+           AudioOraclePitch::GainDoubler,
+           AudioOracleSpectralCentroid::GainDoubler,
+           AudioOracleZCS::GainDoubler,
+           VariableMarkovOracle::GainDoubler,
+           VariableMarkovOracleMFCC::GainDoubler,
+           VariableMarkovOracleRMS::GainDoubler,
+           VariableMarkovOraclePitch::GainDoubler,
+           VariableMarkovOracleCentroid::GainDoubler,
+           VariableMarkovOracleZCS::GainDoubler
+        >>(ctx, key);
+  }
+  else
+  {
   return Control::instantiate_fx<
       Analysis::Centroid,
       Analysis::CSD,
@@ -48,6 +84,7 @@ std::vector<std::unique_ptr<score::InterfaceBase>> score_plugin_analysis::factor
       Analysis::Spectrum,
       Analysis::ZeroCrossing
       >(ctx, key);
+  }
 }
 
 auto score_plugin_analysis::required() const -> std::vector<score::PluginKey>
